@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/site-images.js": {
+      "includeFiles": "Sites/**"
+    }
+  }
+}

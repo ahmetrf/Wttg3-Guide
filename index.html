@@ -82,6 +82,7 @@
   const slots = ['00', '15', '30', '45'];
   let visited = {};
   let siteGroups = [];
+  let siteImages = {};
   let sortTransitionTimer;
   let imageRequestId = 0;
 
@@ -161,7 +162,7 @@
       }
     });
     image.addEventListener('error', function() {
-      imageViewer.replaceChildren(createCell('p', 'image-message', `Could not load ${tab.label}.png.`));
+      imageViewer.replaceChildren(createCell('p', 'image-message', `Could not load ${tab.file}.`));
     }, { once: true });
     imageViewer.appendChild(image);
   }
@@ -169,48 +170,69 @@
   async function openSiteImages(siteName) {
     const requestId = ++imageRequestId;
     const folder = siteFolderName(siteName);
-    const candidates = ['index', 'submit'].map(function(label) {
-      return { label: label, url: `./Sites/${folder}/${label}.png` };
-    });
 
     dialogTitle.textContent = siteName;
     imageTabs.replaceChildren();
     imageViewer.replaceChildren(createCell('p', 'image-message', 'Loading images...'));
     siteDialog.showModal();
 
-    const imageChecks = await Promise.all(candidates.map(async function(tab) {
-      try {
-        const response = await fetch(tab.url, { method: 'HEAD' });
-        return { tab: tab, available: response.ok, error: null };
-      } catch (error) {
-        return { tab: tab, available: false, error: error };
-      }
-    }));
-
-    if (requestId !== imageRequestId || !siteDialog.open) return;
-    const availableTabs = imageChecks.filter(function(check) { return check.available; }).map(function(check) { return check.tab; });
-    if (!availableTabs.length) {
-      const failedCheck = imageChecks.find(function(check) { return check.error; });
-      if (failedCheck) {
-        imageViewer.replaceChildren(createCell('p', 'image-message', 'Could not check this site’s images. Open the page through a web server and try again.'));
-        console.error(`Could not check image ${failedCheck.tab.url}.`, failedCheck.error);
-      } else {
-        imageViewer.replaceChildren(createCell('p', 'image-message', 'No images found for this site.'));
-      }
+    let response;
+    try {
+      response = await fetch(`/api/site-images?folder=${encodeURIComponent(folder)}`);
+    } catch (error) {
+      if (requestId !== imageRequestId || !siteDialog.open) return;
+      imageViewer.replaceChildren(createCell('p', 'image-message', 'Could not load this site’s images. Please try again later.'));
+      console.error(`Could not load images for ${folder}.`, error);
       return;
     }
 
-    availableTabs.forEach(function(tab, index) {
+    if (requestId !== imageRequestId || !siteDialog.open) return;
+    if (!response.ok) {
+      imageViewer.replaceChildren(createCell('p', 'image-message', 'Could not load this site’s images. Please try again later.'));
+      console.error(`Image API request failed with status ${response.status}.`);
+      return;
+    }
+
+    let data;
+    try {
+      data = await response.json();
+    } catch (error) {
+      if (requestId !== imageRequestId || !siteDialog.open) return;
+      imageViewer.replaceChildren(createCell('p', 'image-message', 'Could not read this site’s image list.'));
+      console.error('Could not parse the site image response.', error);
+      return;
+    }
+
+    if (requestId !== imageRequestId || !siteDialog.open) return;
+    if (!data || !Array.isArray(data.images)) {
+      imageViewer.replaceChildren(createCell('p', 'image-message', 'The image service returned an invalid response.'));
+      console.error('The site image response must include an images array.');
+      return;
+    }
+    if (data.images.length === 0) {
+      imageViewer.replaceChildren(createCell('p', 'image-message', 'No PNG images found for this site.'));
+      return;
+    }
+
+    const candidates = data.images.map(function(file) {
+      return {
+        file: file,
+        label: file.replace(/\.png$/i, ''),
+        url: `./Sites/${encodeURIComponent(folder)}/${encodeURIComponent(file)}`
+      };
+    });
+
+    candidates.forEach(function(tab, index) {
       const button = createCell('button', 'image-tab', tab.label);
       button.type = 'button';
-      button.dataset.file = tab.label;
+      button.dataset.file = tab.file;
       button.setAttribute('role', 'tab');
       button.setAttribute('aria-selected', 'false');
       button.addEventListener('click', function() {
         showImageTab(tab, siteName);
       });
       imageTabs.appendChild(button);
-      if (index === 0) showImageTab(tab, siteName);
+      if (index === 0 && requestId === imageRequestId && siteDialog.open) showImageTab(tab, siteName);
     });
   }
 
@@ -351,7 +373,7 @@
     })
     .then(load)
     .catch(function(error) {
-      status.textContent = 'Could not load sites.json. Open this page through a web server.';
+      status.textContent = 'Could not load site data. Please try again later.';
       schedule.replaceChildren(createCell('p', 'schedule-error', status.textContent));
       console.error('Could not load the site schedule.', error);
     });

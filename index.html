@@ -1,0 +1,361 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111827">
+<title>Wttg3 Guide - Ahmetrf</title>
+<link rel="icon" type="image/png" href="images/logo.png">
+<style>
+:root{color-scheme:dark;--bg:#0b1120;--panel:#111a2c;--panel2:#172238;--line:#29364d;--text:#e5eaf3;--muted:#9ca9bd;--accent:#7dd3fc;--h87:#e85d2a;--h40:#f4a261}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#17243a 0%,var(--bg) 55%);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}main{width:min(1100px,calc(100% - 32px));margin:0 auto;padding:42px 0 64px}header{margin-bottom:30px}h1{margin:0;font-size:clamp(2rem,5vw,3rem);letter-spacing:-.04em}header p{margin:8px 0 0;color:var(--muted)}h2{font-size:1.25rem;margin:0;padding:18px 20px;border-bottom:1px solid var(--line)}.schedule-section,.tier-section{margin:18px 0 26px;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 10px 30px #0002}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th,td{text-align:left;padding:10px 14px;border-bottom:1px solid #ffffff0d}th{background:var(--panel2);color:#c9d5e6;font-size:.84rem;font-weight:650;letter-spacing:.025em}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#ffffff08}.site-table th:first-child,.site-table td:first-child{text-align:center}.visited-col{width:82px}.visited-check{width:18px;height:18px;accent-color:#38bdf8;vertical-align:middle;cursor:pointer}.site-name{font-weight:550}.site-name span[style*="#E85D2A"]{color:var(--h87)!important}.site-name span[style*="#F4A261"]{color:var(--h40)!important}.site-table tr:has(.visited-check:checked) .site-name{color:var(--muted);text-decoration:line-through;text-decoration-color:#64748b}.tier-section{max-width:600px}.tier-section table{white-space:normal}.tier-section td:last-child{font-variant-numeric:tabular-nums;color:#a5e5ff}.tier-section tbody tr:nth-child(even){background:#ffffff05}.section-label{margin:42px 0 12px;color:var(--accent);font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em}.status{margin-left:10px;color:var(--muted);font-size:.88rem}@media(max-width:600px){main{width:calc(100% - 20px);padding-top:24px}th,td{padding:9px 10px}.visited-col{width:64px}.site-table{font-size:.9rem}}
+.timeline-col{min-width:340px}.timeline-axis{display:flex;justify-content:space-between;color:#c9d5e6}.timeline-track{position:relative;height:16px;min-width:300px;overflow:hidden;border-radius:4px;background:linear-gradient(to right,var(--line) 1px,transparent 1px) 0 0/25% 100% repeat-x,#ffffff08}.availability-bar{position:absolute;top:2px;bottom:2px;border-radius:3px;background:var(--accent)}.availability-bar.tier-h87{background:var(--h87)}.availability-bar.tier-h40{background:var(--h40)}.site-name .tier-h87{color:var(--h87)}.site-name .tier-h40{color:var(--h40)}.site-link{padding:0;border:0;background:none;color:inherit;font:inherit;font-weight:inherit;text-align:left;text-decoration:underline;text-decoration-color:#64748b;text-underline-offset:3px;cursor:pointer}.site-link:hover{color:var(--accent)}.schedule-controls{display:flex;align-items:center;gap:10px;margin-bottom:14px}.sort-option{color:var(--muted);cursor:pointer}.sort-option.active{color:var(--text);font-weight:650}.sort-toggle{position:relative;display:inline-block;width:42px;height:24px;flex:none}.sort-toggle input{position:absolute;width:1px;height:1px;opacity:0}.sort-slider{position:absolute;inset:0;border:1px solid var(--line);border-radius:999px;background:var(--panel2);cursor:pointer;transition:background .2s}.sort-slider:before{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--accent);content:"";transition:transform .2s}.sort-toggle input:checked+.sort-slider:before{transform:translateX(18px)}.sort-toggle input:focus-visible+.sort-slider{outline:2px solid var(--accent);outline-offset:2px}#site-schedule{opacity:1;transform:translateY(0);transition:opacity .18s ease,transform .18s ease}#site-schedule.is-transitioning{opacity:0;transform:translateY(6px)}.site-dialog{width:min(760px,calc(100% - 32px));max-width:none;max-height:calc(100% - 32px);padding:0;overflow:hidden;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--text);box-shadow:0 24px 80px #0009}.site-dialog::backdrop{background:#020617cc;backdrop-filter:blur(3px)}.dialog-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line)}.dialog-header h2{padding:0;border:0}.dialog-close{width:36px;height:36px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--text);font:inherit;font-size:1.2rem;cursor:pointer}.image-tabs{display:flex;gap:8px;padding:12px 18px 0}.image-tab{padding:7px 16px;border:1px solid var(--line);border-radius:7px;background:var(--panel2);color:var(--text);font:inherit;cursor:pointer}.image-tab[aria-selected="true"]{border-color:var(--accent);background:#7dd3fc20;color:var(--accent)}.site-image-viewer{display:grid;min-height:280px;max-height:min(65vh,620px);place-items:center;margin:12px 18px 18px;overflow:auto;border:1px solid var(--line);border-radius:14px;background:#080e19}.site-image-viewer img{display:block;max-width:100%;max-height:min(62vh,580px);object-fit:contain;cursor:zoom-in}.site-image-viewer:fullscreen{width:100vw;height:100vh;max-height:none;min-height:0;margin:0;padding:12px;border:0;border-radius:0;background:#020617}.site-image-viewer:fullscreen img{max-width:100%;max-height:100%;cursor:zoom-out}.image-message{padding:24px;color:var(--muted);text-align:center}.schedule-error{padding:18px 20px;color:#fca5a5}
+@media(prefers-reduced-motion:reduce){#site-schedule,.sort-slider,.sort-slider:before{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<header><h1>Site Schedule</h1><p>Track visited sites and check mining speeds. Visited selections are saved in this browser.</p><span class="status" id="status" aria-live="polite"></span></header>
+<div class="section-label">Site schedule</div>
+<div class="schedule-controls" role="group" aria-label="Sort sites">
+<span class="sort-option active" id="sort-schedule-label">By Schedule</span>
+<label class="sort-toggle"><input id="schedule-sort" type="checkbox" aria-label="Switch to alphabetical sort"><span class="sort-slider"></span></label>
+<span class="sort-option" id="sort-alphabetical-label">Alphabetical</span>
+</div>
+<div id="site-schedule"></div>
+<div class="section-label">Mining tiers</div>
+<section class="tier-section"><h2>Tier 1</h2><div class="table-wrap"><table><thead><tr><th scope="col">Name</th><th scope="col">Mining speed</th></tr></thead><tbody>
+<tr><td>WebTyk</td><td>1.84 DOS/min</td></tr>
+<tr><td>UserJyx</td><td>1.80 DOS/min</td></tr>
+<tr><td>NetVorn</td><td>1.45 DOS/min</td></tr>
+<tr><td>CloudFuz</td><td>0.88 DOS/min</td></tr>
+<tr><td>SysBlip</td><td>0.87 DOS/min</td></tr>
+<tr><td>DevQuix</td><td>0.64 DOS/min</td></tr>
+<tr><td>IT_Kwez</td><td>0.42 DOS/min</td></tr>
+<tr><td>DataRax</td><td>0.32 DOS/min</td></tr>
+<tr><td>WorkZap</td><td>0.31 DOS/min</td></tr>
+<tr><td>CodePlix</td><td>0.30 DOS/min</td></tr>
+</tbody></table></div></section>
+<section class="tier-section"><h2>Tier 2</h2><div class="table-wrap"><table><thead><tr><th scope="col">Name</th><th scope="col">Mining speed</th></tr></thead><tbody>
+<tr><td>OpsHax</td><td>3.23 DOS/min</td></tr>
+<tr><td>SecCrux</td><td>2.73 DOS/min</td></tr>
+<tr><td>GameDrux</td><td>2.57 DOS/min</td></tr>
+<tr><td>PrintYiv</td><td>2.43 DOS/min</td></tr>
+<tr><td>FileNuz</td><td>1.88 DOS/min</td></tr>
+<tr><td>Prod Glin</td><td>1.80 DOS/min</td></tr>
+<tr><td>VM_Wekl</td><td>1.74 DOS/min</td></tr>
+<tr><td>BackSkiv</td><td>1.49 DOS/min</td></tr>
+<tr><td>TestXor</td><td>1.36 DOS/min</td></tr>
+<tr><td>LabBzop</td><td>0.48 DOS/min</td></tr>
+</tbody></table></div></section>
+<section class="tier-section"><h2>Tier 3</h2><div class="table-wrap"><table><thead><tr><th scope="col">Name</th><th scope="col">Mining speed</th></tr></thead><tbody>
+<tr><td>Phoenix</td><td>4.79 DOS/min</td></tr>
+<tr><td>MediaVlu</td><td>3.93 DOS/min</td></tr>
+<tr><td>QA_Pivz</td><td>3.58 DOS/min</td></tr>
+<tr><td>HR_Treq</td><td>3.42 DOS/min</td></tr>
+<tr><td>VPN_Qwer</td><td>3.38 DOS/min</td></tr>
+<tr><td>FinLoxu</td><td>3.38 DOS/min</td></tr>
+<tr><td>SalesMiv</td><td>3.21 DOS/min</td></tr>
+<tr><td>ChatEzk</td><td>3.17 DOS/min</td></tr>
+<tr><td>EngZolp</td><td>2.63 DOS/min</td></tr>
+<tr><td>LogJuk</td><td>0.30 DOS/min</td></tr>
+</tbody></table></div></section>
+</main>
+<dialog class="site-dialog" id="site-dialog" aria-labelledby="site-dialog-title">
+<div class="dialog-header"><h2 id="site-dialog-title"></h2><button class="dialog-close" type="button" aria-label="Close image viewer">&times;</button></div>
+<div class="image-tabs" role="tablist" aria-label="Site images"></div>
+<div class="site-image-viewer" aria-live="polite"></div>
+</dialog>
+<script>
+(function(){
+  const storageKey = 'site-schedule-visited-v1';
+  const status = document.getElementById('status');
+  const schedule = document.getElementById('site-schedule');
+  const sortControl = document.getElementById('schedule-sort');
+  const scheduleLabel = document.getElementById('sort-schedule-label');
+  const alphabeticalLabel = document.getElementById('sort-alphabetical-label');
+  const siteDialog = document.getElementById('site-dialog');
+  const dialogTitle = document.getElementById('site-dialog-title');
+  const dialogClose = siteDialog.querySelector('.dialog-close');
+  const imageTabs = siteDialog.querySelector('.image-tabs');
+  const imageViewer = siteDialog.querySelector('.site-image-viewer');
+  const slots = ['00', '15', '30', '45'];
+  let visited = {};
+  let siteGroups = [];
+  let sortTransitionTimer;
+  let imageRequestId = 0;
+
+  try {
+    const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    if (saved && typeof saved === 'object' && !Array.isArray(saved)) visited = saved;
+  } catch (error) {
+    status.textContent = 'Could not load saved visit marks.';
+    console.error('Could not load saved visit marks.', error);
+  }
+
+  function createCell(tag, className, text) {
+    const cell = document.createElement(tag);
+    if (className) cell.className = className;
+    if (text !== undefined) cell.textContent = text;
+    return cell;
+  }
+
+  function makeTimeline(site) {
+    const track = createCell('div', 'timeline-track');
+    const ranges = [];
+    let index = 0;
+
+    while (index < slots.length) {
+      if (site[slots[index]] !== true) {
+        index += 1;
+        continue;
+      }
+      const start = index;
+      while (index < slots.length && site[slots[index]] === true) index += 1;
+      const end = index;
+      ranges.push(`${String(start * 15).padStart(2, '0')}-${String(end * 15).padStart(2, '0')}`);
+
+      const bar = createCell('span', 'availability-bar');
+      bar.style.left = `${start * 25}%`;
+      bar.style.width = `${(end - start) * 25}%`;
+      if (site.name.endsWith('[H87]')) bar.classList.add('tier-h87');
+      if (site.name.endsWith('[H40]')) bar.classList.add('tier-h40');
+      track.appendChild(bar);
+    }
+
+    track.setAttribute('role', 'img');
+    track.setAttribute('aria-label', ranges.length ? `Available ${ranges.join(', ')}` : 'Not available');
+    return track;
+  }
+
+  function siteFolderName(name) {
+    return name
+      .replace(/\s*\[H(?:87|40)\]\s*$/i, '')
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/gi, '')
+      .toLowerCase();
+  }
+
+  function showImageTab(tab, siteName) {
+    imageTabs.querySelectorAll('.image-tab').forEach(function(button) {
+      button.setAttribute('aria-selected', String(button.dataset.file === tab.file));
+    });
+    imageViewer.replaceChildren();
+    const image = document.createElement('img');
+    image.src = tab.url;
+    image.alt = `${siteName} - ${tab.label}`;
+    image.title = 'Click to view full screen';
+    image.addEventListener('click', function() {
+      if (document.fullscreenElement === imageViewer) {
+        document.exitFullscreen().catch(function(error) {
+          console.error('Could not exit full-screen image view.', error);
+        });
+      } else if (imageViewer.requestFullscreen) {
+        imageViewer.requestFullscreen().catch(function(error) {
+          imageViewer.replaceChildren(createCell('p', 'image-message', 'Could not open the image in full screen.'));
+          console.error('Could not open the image in full screen.', error);
+        });
+      } else {
+        imageViewer.replaceChildren(createCell('p', 'image-message', 'Full-screen viewing is not supported by this browser.'));
+      }
+    });
+    image.addEventListener('error', function() {
+      imageViewer.replaceChildren(createCell('p', 'image-message', `Could not load ${tab.label}.png.`));
+    }, { once: true });
+    imageViewer.appendChild(image);
+  }
+
+  async function openSiteImages(siteName) {
+    const requestId = ++imageRequestId;
+    const folder = siteFolderName(siteName);
+    const candidates = ['index', 'submit'].map(function(label) {
+      return { label: label, url: `./Sites/${folder}/${label}.png` };
+    });
+
+    dialogTitle.textContent = siteName;
+    imageTabs.replaceChildren();
+    imageViewer.replaceChildren(createCell('p', 'image-message', 'Loading images...'));
+    siteDialog.showModal();
+
+    const imageChecks = await Promise.all(candidates.map(async function(tab) {
+      try {
+        const response = await fetch(tab.url, { method: 'HEAD' });
+        return { tab: tab, available: response.ok, error: null };
+      } catch (error) {
+        return { tab: tab, available: false, error: error };
+      }
+    }));
+
+    if (requestId !== imageRequestId || !siteDialog.open) return;
+    const availableTabs = imageChecks.filter(function(check) { return check.available; }).map(function(check) { return check.tab; });
+    if (!availableTabs.length) {
+      const failedCheck = imageChecks.find(function(check) { return check.error; });
+      if (failedCheck) {
+        imageViewer.replaceChildren(createCell('p', 'image-message', 'Could not check this site’s images. Open the page through a web server and try again.'));
+        console.error(`Could not check image ${failedCheck.tab.url}.`, failedCheck.error);
+      } else {
+        imageViewer.replaceChildren(createCell('p', 'image-message', 'No images found for this site.'));
+      }
+      return;
+    }
+
+    availableTabs.forEach(function(tab, index) {
+      const button = createCell('button', 'image-tab', tab.label);
+      button.type = 'button';
+      button.dataset.file = tab.label;
+      button.setAttribute('role', 'tab');
+      button.setAttribute('aria-selected', 'false');
+      button.addEventListener('click', function() {
+        showImageTab(tab, siteName);
+      });
+      imageTabs.appendChild(button);
+      if (index === 0) showImageTab(tab, siteName);
+    });
+  }
+
+  function renderGroup(group, sites) {
+    if (!group || typeof group.group !== 'string' || !Array.isArray(sites)) {
+      throw new Error('Each site group must have a name and a sites array.');
+    }
+
+    const section = createCell('section', 'schedule-section');
+    const heading = createCell('h2', '', group.group);
+    const tableWrap = createCell('div', 'table-wrap');
+    const table = createCell('table', 'site-table');
+    const head = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    const columns = [
+      ['Visited', 'visited-col'],
+      ['Site', ''],
+      ['', 'timeline-col']
+    ];
+    columns.forEach(function(column) {
+      const cell = createCell('th', column[1], column[0]);
+      cell.scope = 'col';
+      if (column[1] === 'timeline-col') {
+        const axis = createCell('div', 'timeline-axis');
+        ['00', '15', '30', '45', '60'].forEach(function(time) {
+          axis.appendChild(createCell('span', '', time));
+        });
+        cell.appendChild(axis);
+      }
+      headerRow.appendChild(cell);
+    });
+    head.appendChild(headerRow);
+    table.appendChild(head);
+
+    const body = document.createElement('tbody');
+    sites.forEach(function(site) {
+      if (!site || typeof site.name !== 'string' || slots.some(function(slot) { return typeof site[slot] !== 'boolean'; })) {
+        throw new Error(`Invalid site entry in group "${site.group || group.group}".`);
+      }
+
+      const row = document.createElement('tr');
+      const visitedCell = createCell('td', 'visited-col');
+      const checkbox = createCell('input', 'visited-check');
+      const key = `${site.group || group.group}|${site.name}`;
+      checkbox.type = 'checkbox';
+      checkbox.dataset.key = key;
+      checkbox.setAttribute('aria-label', `Mark ${site.name} visited`);
+      checkbox.checked = Boolean(visited[key]);
+      checkbox.addEventListener('change', function() {
+        visited[key] = checkbox.checked;
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(visited));
+          status.textContent = 'Saved';
+        } catch (error) {
+          status.textContent = 'Could not save visit marks in this browser.';
+          console.error('Could not save visit marks in this browser.', error);
+        }
+      });
+      visitedCell.appendChild(checkbox);
+      row.appendChild(visitedCell);
+
+      const nameCell = createCell('td', 'site-name');
+      const name = createCell('button', 'site-link', site.name);
+      name.type = 'button';
+      name.addEventListener('click', function() {
+        openSiteImages(site.name);
+      });
+      if (site.name.endsWith('[H87]')) name.classList.add('tier-h87');
+      if (site.name.endsWith('[H40]')) name.classList.add('tier-h40');
+      nameCell.appendChild(name);
+      row.appendChild(nameCell);
+
+      const timelineCell = createCell('td', 'timeline-col');
+      timelineCell.appendChild(makeTimeline(site));
+      row.appendChild(timelineCell);
+      body.appendChild(row);
+    });
+
+    table.appendChild(body);
+    tableWrap.appendChild(table);
+    section.append(heading, tableWrap);
+    schedule.appendChild(section);
+  }
+
+  function render() {
+    schedule.replaceChildren();
+    if (sortControl.checked) {
+      const allSites = siteGroups.flatMap(function(group) {
+        return group.sites.map(function(site) {
+          return Object.assign({ group: group.group }, site);
+        });
+      });
+      allSites.sort(function(left, right) {
+        return left.name.localeCompare(right.name, undefined, { sensitivity: 'base' });
+      });
+      renderGroup({ group: 'Alphabetical', sites: allSites }, allSites);
+      return;
+    }
+
+    siteGroups.forEach(function(group) {
+      renderGroup(group, group.sites);
+    });
+  }
+
+  function transitionRender() {
+    window.clearTimeout(sortTransitionTimer);
+    schedule.classList.add('is-transitioning');
+    sortTransitionTimer = window.setTimeout(function() {
+      render();
+      window.requestAnimationFrame(function() {
+        schedule.classList.remove('is-transitioning');
+      });
+    }, 180);
+  }
+
+  function load(data) {
+    if (!data || !Array.isArray(data.groups)) throw new Error('sites.json must contain a groups array.');
+    siteGroups = data.groups;
+    render();
+  }
+
+  sortControl.addEventListener('change', function() {
+    scheduleLabel.classList.toggle('active', !sortControl.checked);
+    alphabeticalLabel.classList.toggle('active', sortControl.checked);
+    sortControl.setAttribute('aria-label', sortControl.checked ? 'Switch to schedule sort' : 'Switch to alphabetical sort');
+    transitionRender();
+  });
+  dialogClose.addEventListener('click', function() {
+    siteDialog.close();
+  });
+  siteDialog.addEventListener('click', function(event) {
+    if (event.target === siteDialog) siteDialog.close();
+  });
+  fetch('/json/sites.json')
+    .then(function(response) {
+      if (!response.ok) throw new Error(`sites.json request failed with status ${response.status}.`);
+      return response.json();
+    })
+    .then(load)
+    .catch(function(error) {
+      status.textContent = 'Could not load sites.json. Open this page through a web server.';
+      schedule.replaceChildren(createCell('p', 'schedule-error', status.textContent));
+      console.error('Could not load the site schedule.', error);
+    });
+})();
+</script>
+</body>
+</html>

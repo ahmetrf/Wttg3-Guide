@@ -1,0 +1,103 @@
+{
+  "groups": [
+    {
+      "group": "00 TO 15",
+      "sites": [
+        { "name": "FindLove", "00": true, "15": false, "30": false, "45": false },
+        { "name": "Forsaken Gifts", "00": true, "15": false, "30": false, "45": false },
+        { "name": "Mors N More Market", "00": true, "15": false, "30": false, "45": false },
+        { "name": "Order Of Nine [H87]", "00": true, "15": false, "30": false, "45": false },
+        { "name": "The Prey [H40]", "00": true, "15": false, "30": false, "45": false }
+      ]
+    },
+    {
+      "group": "00 TO 30",
+      "sites": [
+        { "name": "Blackhat Post [H87]", "00": true, "15": true, "30": false, "45": false },
+        { "name": "Drug Tickets", "00": true, "15": true, "30": false, "45": false },
+        { "name": "Kill For Me", "00": true, "15": true, "30": false, "45": false },
+        { "name": "MamaBruguglio", "00": true, "15": true, "30": false, "45": false },
+        { "name": "Red Handed", "00": true, "15": true, "30": false, "45": false },
+        { "name": "ViaMarisRoute", "00": true, "15": true, "30": false, "45": false }
+      ]
+    },
+    {
+      "group": "15 TO 30",
+      "sites": [
+        { "name": "Building A Future", "00": false, "15": true, "30": false, "45": false },
+        { "name": "Eat My ♥♥♥♥", "00": false, "15": true, "30": false, "45": false },
+        { "name": "Overnight Success", "00": false, "15": true, "30": false, "45": false }
+      ]
+    },
+    {
+      "group": "30 TO 45",
+      "sites": [
+        { "name": "Bizarre Propagation", "00": false, "15": false, "30": true, "45": false },
+        { "name": "Crystal Guild", "00": false, "15": false, "30": true, "45": false },
+        { "name": "I Am Here", "00": false, "15": false, "30": true, "45": false },
+        { "name": "Keep Sake", "00": false, "15": false, "30": true, "45": false },
+        { "name": "Shelter", "00": false, "15": false, "30": true, "45": false },
+        { "name": "You There? [H87]", "00": false, "15": false, "30": true, "45": false }
+      ]
+    },
+    {
+      "group": "30 TO 60",
+      "sites": [
+        { "name": "Chevron", "00": false, "15": false, "30": true, "45": true },
+        { "name": "finalStanding", "00": false, "15": false, "30": true, "45": true },
+        { "name": "Lab Monkey [H87]", "00": false, "15": false, "30": true, "45": true },
+        { "name": "The Grey", "00": false, "15": false, "30": true, "45": true }
+      ]
+    },
+    {
+      "group": "45 TO 60",
+      "sites": [
+        { "name": "The Hall", "00": false, "15": false, "30": false, "45": true }
+      ]
+    },
+    {
+      "group": "ALWAYS",
+      "sites": [
+        { "name": "Blushing Brides", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Cavity Lease", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Crisis Calls", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Doctor Murder [H40]", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Don't Waste It [H40]", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Doughy", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Encrave", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Forever Friend", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Jakobs Sink", "00": true, "15": true, "30": true, "45": true },
+        { "name": "LostTapes [H40]", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Oneless", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Prohibited Stockpile", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Red Triangle", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Ring Ring", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Symphoros Chosen", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Synapse Decay", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Tango Down [H87]", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Thanks For Visiting!", "00": true, "15": true, "30": true, "45": true },
+        { "name": "The Bomb Maker", "00": true, "15": true, "30": true, "45": true },
+        { "name": "The Hole", "00": true, "15": true, "30": true, "45": true },
+        { "name": "The Light Within", "00": true, "15": true, "30": true, "45": true },
+        { "name": "The Loogaroo", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Time Sharing", "00": true, "15": true, "30": true, "45": true },
+        { "name": "TRACK06", "00": true, "15": true, "30": true, "45": true },
+        { "name": "VoluVision", "00": true, "15": true, "30": true, "45": true },
+        { "name": "World Wide Workers", "00": true, "15": true, "30": true, "45": true }
+      ]
+    },
+    {
+      "group": "FBI SEIZED",
+      "sites": [
+        { "name": "Cryptic Forge", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Dusk Haven", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Evidence Locker", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Hidden Pleasures", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Iron Mask", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Is Evil", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Pale Market", "00": true, "15": true, "30": true, "45": true },
+        { "name": "Roses Destruction", "00": true, "15": true, "30": true, "45": true }
+      ]
+    }
+  ]
+}

@@ -1,12 +1,13 @@
 # Wttg3 Guide
 
-Wttg3 Guide, Welcome To The Game 3 sitelerinin zaman çizelgelerini ve mining tier bilgilerini sunan bir web uygulamasıdır. Arayüz statik dosyalardan oluşur; site görselleri ise istek sırasında sunucu tarafındaki API tarafından taranır.
+Wttg3 Guide, Welcome To The Game 3 sitelerinin zaman çizelgelerini ve mining tier bilgilerini sunan React tabanlı bir web uygulamasıdır. Ön yüz Vite ile derlenir; site görselleri ise istek sırasında sunucu tarafındaki API tarafından taranır.
 
 ## Özellikler
 
 - Siteleri mevcut zaman gruplarına göre veya alfabetik tek bir listede görüntüleme
 - Site uygunluklarını 00–60 dakikalık zaman çizelgesinde takip etme
 - Ziyaret edilen siteleri işaretleme
+- FBI tarafından el konulan siteleri zamanlama ve alfabetik görünümlerde `[FBI Seized]` etiketiyle gri, değiştirilemez satırlar olarak gösterme
 - Site adına tıklayarak ilgili klasördeki görselleri görüntüleme
 - Görsellere tıklayarak tam ekran açma
 - Tier 1, Tier 2 ve Tier 3 mining hızlarını görüntüleme
@@ -22,6 +23,17 @@ Site grupları ve saat uygunlukları [`json/sites.json`](./json/sites.json) dosy
 - `00`, `15`, `30`, `45`: İlgili 15 dakikalık aralığın uygun olup olmadığını belirten `true` veya `false` değerleri
 
 Örneğin `00` ve `15` değerleri `true` olan bir site, zaman çizelgesinde 00’dan 30’a kadar kesintisiz bir çubukla gösterilir.
+
+## Geliştirme
+
+Node.js kurulu bir ortamda bağımlılıkları yükleyip Vite geliştirme sunucusunu başlatın. Geliştirme sunucusu görsel API’sini de mevcut sunucu fonksiyonuna yönlendirir:
+
+```sh
+npm install
+npm run dev
+```
+
+Üretim derlemesini `npm run build` ile `dist/` klasörüne alın; yerel üretim önizlemesi için `npm run preview` komutunu kullanın. `src/App.jsx` React arayüzünü, `src/styles.css` stilleri içerir. Vite derleme sırasında `Sites/`, `images/` ve `json/` klasörlerini `dist/` içine kopyalar.
 
 ## Site görselleri
 
@@ -44,12 +56,13 @@ Site klasöründe PNG yoksa bilgilendirme mesajı gösterilir. Görselleri eklem
 
 ## Yayınlama
 
-Uygulamanın ön yüzü statik dosyalardan oluşur; görsel klasörlerini çalışma anında tarayan API ise Node.js sunucu fonksiyonu olarak çalışır. Bu nedenle yalnızca statik dosya sunan servisler API’yi çalıştıramaz. Vercel’de depoyu içe aktarırken:
+Uygulamanın ön yüzü Vite ile `dist/` klasörüne derlenir; görsel klasörlerini çalışma anında tarayan API ise Node.js sunucu fonksiyonu olarak çalışır. Bu nedenle yalnızca statik dosya sunan servisler API’yi çalıştıramaz. Vercel’de depoyu içe aktarırken:
 
-- **Framework Preset:** Other
-- **Build Command:** Boş bırakın; Vercel `api/site-images.js` fonksiyonunu otomatik algılar.
+- **Framework Preset:** Vite
+- **Build Command:** `npm run build`
+- **Output Directory:** `dist`
 
-`vercel.json`, `Sites/` görsellerinin API fonksiyonuna dahil edilmesini sağlar. `index.html`, `json/sites.json`, `api/`, `Sites/` ve `images/` proje yapısını koruyarak deploy edilmelidir. Görsel ekleme veya silme değişikliklerini deploy ettikten sonra API klasörü yeniden tarar.
+`vercel.json`, `Sites/` görsellerinin API fonksiyonuna dahil edilmesini sağlar. `index.html`, `src/`, `json/sites.json`, `api/`, `Sites/` ve `images/` proje yapısını koruyarak deploy edilmelidir. Görsel ekleme veya silme değişikliklerini deploy ettikten sonra API klasörü yeniden tarar.
 
 ## Lisans
 

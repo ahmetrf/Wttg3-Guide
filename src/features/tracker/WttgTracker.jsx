@@ -298,10 +298,11 @@ export default function WttgTracker({ onOpenSite, onVisitedChange, visited }) {
   else { statusText = "Oyuna bağlı"; statusTone = "ok"; }
 
   const showData = data && data.in_game && !stale;
+  const threatActive = Boolean(data?.threat?.active_event) || (data?.threat?.actors?.length ?? 0) > 0;
   const p = data?.player ?? {};
 
   return (
-    <div className="wt">
+    <div className={`wt${showData && threatActive ? " is-threat-active" : ""}`}>
       <header className="wt-top">
         <div>
           <p className="wt-eyebrow">NIGHT SHIFT <span>//</span> OPERASYON PANELİ</p>
@@ -419,15 +420,15 @@ export default function WttgTracker({ onOpenSite, onVisitedChange, visited }) {
               visited={visited}
             />
           </div>
+
+          <section aria-label="Tier list">
+            <div className="section-label">Mining tiers</div>
+            <div className="tiers-grid">
+              {MINING_TIERS.map((tier) => <MiningTier key={tier.name} tier={tier} />)}
+            </div>
+          </section>
         </>
       )}
-
-      <section aria-label="Tier list">
-        <div className="section-label">Mining tiers</div>
-        <div className="tiers-grid">
-          {MINING_TIERS.map((tier) => <MiningTier key={tier.name} tier={tier} />)}
-        </div>
-      </section>
     </div>
   );
 }

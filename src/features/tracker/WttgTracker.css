@@ -16,6 +16,11 @@
   font-variant-numeric: tabular-nums;
   line-height: 1.45;
   box-sizing: border-box;
+  transition: background .25s ease;
+}
+
+.wt.is-threat-active {
+  background: radial-gradient(ellipse at 50% 0, #7f1d3d55, transparent 72%), linear-gradient(180deg, #3b14251f, transparent 70%);
 }
 
 .wt * { box-sizing: border-box; }

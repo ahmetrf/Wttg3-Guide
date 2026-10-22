@@ -10,6 +10,7 @@ Welcome To The Game 3 için hazırlanan bu React uygulaması; site programını,
 - FBI tarafından el konulan siteleri `[FBI Seized]` etiketiyle gösterme
 - Site görsellerini görüntüleme ve görseli tam ekran açma
 - Tier 1, Tier 2 ve Tier 3 mining hızlarını ayrı tablolarda görüntüleme
+- Mining tier listelerini Tracker ekranının altında da görüntüleme
 - Sekmeler arasında gezinme ve seçili sekmeyi sayfa yenilendiğinde koruma
 - Sekiz key kaydını ve her kayda ait wiki numarasını tutma
 - Tracker'da oyun durumunu canlı izleme veya demo verisini görüntüleme

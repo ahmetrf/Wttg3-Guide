@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { validateSiteData } from "../site-list/siteData.js";
+import MiningTier from "../tier-list/MiningTier.jsx";
+import { MINING_TIERS } from "../tier-list/tiers.js";
 import "./WttgTracker.css";
 
 /* ------------------------------------------------------------------
@@ -419,6 +421,13 @@ export default function WttgTracker({ onOpenSite, onVisitedChange, visited }) {
           </div>
         </>
       )}
+
+      <section aria-label="Tier list">
+        <div className="section-label">Mining tiers</div>
+        <div className="tiers-grid">
+          {MINING_TIERS.map((tier) => <MiningTier key={tier.name} tier={tier} />)}
+        </div>
+      </section>
     </div>
   );
 }

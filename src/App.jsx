@@ -1,280 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-
-const STORAGE_KEY = 'site-schedule-visited-v1';
-const SLOTS = ['00', '15', '30', '45'];
-const TIMES = ['00', '15', '30', '45', '60'];
-const MINING_TIERS = [
-  {
-    name: 'Tier 1',
-    miners: [
-      ['WebTyk', '1.84'], ['UserJyx', '1.80'], ['NetVorn', '1.45'], ['CloudFuz', '0.88'],
-      ['SysBlip', '0.87'], ['DevQuix', '0.64'], ['IT_Kwez', '0.42'], ['DataRax', '0.32'],
-      ['WorkZap', '0.31'], ['CodePlix', '0.30']
-    ]
-  },
-  {
-    name: 'Tier 2',
-    miners: [
-      ['OpsHax', '3.23'], ['SecCrux', '2.73'], ['GameDrux', '2.57'], ['PrintYiv', '2.43'],
-      ['FileNuz', '1.88'], ['Prod Glin', '1.80'], ['VM_Wekl', '1.74'], ['BackSkiv', '1.49'],
-      ['TestXor', '1.36'], ['LabBzop', '0.48']
-    ]
-  },
-  {
-    name: 'Tier 3',
-    miners: [
-      ['Phoenix', '4.79'], ['MediaVlu', '3.93'], ['QA_Pivz', '3.58'], ['HR_Treq', '3.42'],
-      ['VPN_Qwer', '3.38'], ['FinLoxu', '3.38'], ['SalesMiv', '3.21'], ['ChatEzk', '3.17'],
-      ['EngZolp', '2.63'], ['LogJuk', '0.30']
-    ]
-  }
-];
-
-function siteFolderName(name) {
-  return name
-    .replace(/\s*\[H(?:87|40)\]\s*$/i, '')
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]/gi, '')
-    .toLowerCase();
-}
-
-function validateSiteData(data) {
-  if (!data || !Array.isArray(data.groups)) {
-    throw new Error('sites.json must contain a groups array.');
-  }
-
-  data.groups.forEach((group) => {
-    if (!group || typeof group.group !== 'string' || !Array.isArray(group.sites)) {
-      throw new Error('Each site group must have a name and a sites array.');
-    }
-    group.sites.forEach((site) => {
-      if (!site || typeof site.name !== 'string' || SLOTS.some((slot) => typeof site[slot] !== 'boolean')) {
-        throw new Error(`Invalid site entry in group "${group.group}".`);
-      }
-    });
-  });
-  return data.groups;
-}
-
-function Timeline({ site }) {
-  const ranges = [];
-  const bars = [];
-  let index = 0;
-
-  while (index < SLOTS.length) {
-    if (site[SLOTS[index]] !== true) {
-      index += 1;
-      continue;
-    }
-    const start = index;
-    while (index < SLOTS.length && site[SLOTS[index]] === true) index += 1;
-    const end = index;
-    ranges.push(`${String(start * 15).padStart(2, '0')}-${String(end * 15).padStart(2, '0')}`);
-    bars.push(
-      <span
-        className={`availability-bar${site.name.endsWith('[H87]') ? ' tier-h87' : ''}${site.name.endsWith('[H40]') ? ' tier-h40' : ''}`}
-        key={`${start}-${end}`}
-        style={{ left: `${start * 25}%`, width: `${(end - start) * 25}%` }}
-      />
-    );
-  }
-
-  return (
-    <div className="timeline-track" role="img" aria-label={ranges.length ? `Available ${ranges.join(', ')}` : 'Not available'}>
-      {bars}
-    </div>
-  );
-}
-
-function SiteGroup({ group, sites, visited, onVisitedChange, onOpenSite }) {
-  return (
-    <section className="schedule-section">
-      <h2>{group}</h2>
-      <div className="table-wrap">
-        <table className="site-table">
-          <thead>
-            <tr>
-              <th className="visited-col" scope="col">Visited</th>
-              <th scope="col">Site</th>
-              <th className="timeline-col" scope="col">
-                <div className="timeline-axis">
-                  {TIMES.map((time) => <span key={time}>{time}</span>)}
-                </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {sites.map((site) => {
-              const seized = site.isSeized === true;
-              const key = `${site.group || group}|${site.name}`;
-              return (
-                <tr className={seized ? 'seized-site' : undefined} key={key}>
-                  <td className="visited-col">
-                    <input
-                      aria-label={seized ? `${site.name} is FBI seized` : `Mark ${site.name} visited`}
-                      checked={seized || Boolean(visited[key])}
-                      className="visited-check"
-                      disabled={seized}
-                      onChange={(event) => onVisitedChange(key, event.target.checked)}
-                      type="checkbox"
-                    />
-                  </td>
-                  <td className="site-name">
-                    {seized ? (
-                      <span>{site.name} <span className="seized-label">[FBI Seized]</span></span>
-                    ) : (
-                      <button
-                        className={`site-link${site.name.endsWith('[H87]') ? ' tier-h87' : ''}${site.name.endsWith('[H40]') ? ' tier-h40' : ''}`}
-                        onClick={() => onOpenSite(site.name)}
-                        type="button"
-                      >
-                        {site.name}
-                      </button>
-                    )}
-                  </td>
-                  <td className="timeline-col"><Timeline site={site} /></td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  );
-}
-
-function MiningTier({ tier }) {
-  return (
-    <section className="tier-section">
-      <h2>{tier.name}</h2>
-      <div className="table-wrap">
-        <table>
-          <thead><tr><th scope="col">Name</th><th scope="col">Mining speed</th></tr></thead>
-          <tbody>
-            {tier.miners.map(([name, speed]) => (
-              <tr key={name}><td>{name}</td><td>{speed} DOS/min</td></tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  );
-}
-
-function SiteImageDialog({ siteName, onClose }) {
-  const dialogRef = useRef(null);
-  const viewerRef = useRef(null);
-  const [images, setImages] = useState([]);
-  const [selectedFile, setSelectedFile] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!siteName) return undefined;
-    const dialog = dialogRef.current;
-    const controller = new AbortController();
-    if (!dialog.open) dialog.showModal();
-
-    async function loadImages() {
-      try {
-        const folder = siteFolderName(siteName);
-        const response = await fetch(`/api/site-images?folder=${encodeURIComponent(folder)}`, {
-          signal: controller.signal
-        });
-        if (!response.ok) throw new Error(`Image API request failed with status ${response.status}.`);
-        const data = await response.json();
-        if (!data || !Array.isArray(data.images)) {
-          throw new Error('The site image response must include an images array.');
-        }
-        const imageList = data.images.map((file) => ({
-          file,
-          label: file.replace(/\.png$/i, ''),
-          url: `/Sites/${encodeURIComponent(folder)}/${encodeURIComponent(file)}`
-        }));
-        setImages(imageList);
-        setSelectedFile(imageList[0]?.file || '');
-      } catch (loadError) {
-        if (loadError.name === 'AbortError') return;
-        console.error(`Could not load images for ${siteName}.`, loadError);
-        setError('Could not load this site’s images. Please try again later.');
-      } finally {
-        if (!controller.signal.aborted) setLoading(false);
-      }
-    }
-
-    loadImages();
-    return () => {
-      controller.abort();
-      if (dialog.open) dialog.close();
-    };
-  }, [siteName]);
-
-  const selectedImage = images.find((image) => image.file === selectedFile);
-
-  async function toggleFullscreen() {
-    const viewer = viewerRef.current;
-    if (document.fullscreenElement) {
-      await document.exitFullscreen();
-    } else if (viewer?.requestFullscreen) {
-      await viewer.requestFullscreen();
-    } else {
-      setError('Full-screen viewing is not supported by this browser.');
-    }
-  }
-
-  return (
-    <dialog
-      aria-labelledby="site-dialog-title"
-      className="site-dialog"
-      onCancel={onClose}
-      onClick={(event) => {
-        if (event.target === event.currentTarget) onClose();
-      }}
-      ref={dialogRef}
-    >
-      <div className="dialog-header">
-        <h2 id="site-dialog-title">{siteName}</h2>
-        <button aria-label="Close image viewer" className="dialog-close" onClick={onClose} type="button">&times;</button>
-      </div>
-      {images.length > 0 && (
-        <div aria-label="Site images" className="image-tabs" role="tablist">
-          {images.map((image) => (
-            <button
-              aria-selected={selectedFile === image.file}
-              className="image-tab"
-              key={image.file}
-              onClick={() => {
-                setSelectedFile(image.file);
-                setError('');
-              }}
-              role="tab"
-              type="button"
-            >
-              {image.label}
-            </button>
-          ))}
-        </div>
-      )}
-      <div aria-live="polite" className="site-image-viewer" ref={viewerRef}>
-        {loading ? (
-          <p className="image-message">Loading images...</p>
-        ) : error ? (
-          <p className="image-message">{error}</p>
-        ) : selectedImage ? (
-          <img
-            alt={`${siteName} - ${selectedImage.label}`}
-            onClick={toggleFullscreen}
-            onError={() => setError(`Could not load ${selectedImage.file}.`)}
-            src={selectedImage.url}
-          />
-        ) : (
-          <p className="image-message">No PNG images found for this site.</p>
-        )}
-      </div>
-    </dialog>
-  );
-}
+import { useEffect, useMemo, useState } from 'react';
+import { EMPTY_KEY_ROWS, getTabFromLocation, KEY_ROW_COUNT, KEY_TRACKING_STORAGE_KEY, STORAGE_KEY } from './app/appConfig.js';
+import KeyTracking from './features/key-tracking/KeyTracking.jsx';
+import MiningTier from './features/tier-list/MiningTier.jsx';
+import { MINING_TIERS } from './features/tier-list/tiers.js';
+import SiteGroup from './features/site-list/SiteGroup.jsx';
+import SiteImageDialog from './features/site-list/SiteImageDialog.jsx';
+import { validateSiteData } from './features/site-list/siteData.js';
+import WttgTracker from './features/tracker/WttgTracker.jsx';
 
 export default function App() {
   const [initialVisits] = useState(() => {
@@ -296,6 +28,20 @@ export default function App() {
   const [status, setStatus] = useState(initialVisits.error);
   const [loadError, setLoadError] = useState('');
   const [transitioning, setTransitioning] = useState(false);
+  const [activeTab, setActiveTab] = useState(getTabFromLocation);
+  const [keyRows, setKeyRows] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(KEY_TRACKING_STORAGE_KEY) || 'null');
+      if (!Array.isArray(saved) || saved.length !== KEY_ROW_COUNT) return EMPTY_KEY_ROWS;
+      return saved.map((row) => ({
+        key: typeof row?.key === 'string' ? row.key : '',
+        wiki: ['1', '2', '3'].includes(row?.wiki) ? row.wiki : ''
+      }));
+    } catch (error) {
+      console.error('Could not load saved key tracking.', error);
+      return EMPTY_KEY_ROWS;
+    }
+  });
 
   useEffect(() => {
     const controller = new AbortController();
@@ -311,6 +57,18 @@ export default function App() {
         console.error('Could not load the site schedule.', error);
       });
     return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
+    function syncTabFromLocation() {
+      setActiveTab(getTabFromLocation());
+    }
+    window.addEventListener('hashchange', syncTabFromLocation);
+    window.addEventListener('popstate', syncTabFromLocation);
+    return () => {
+      window.removeEventListener('hashchange', syncTabFromLocation);
+      window.removeEventListener('popstate', syncTabFromLocation);
+    };
   }, []);
 
   useEffect(() => {
@@ -344,6 +102,13 @@ export default function App() {
     setSortAlphabetically((value) => !value);
   }
 
+  function navigateToTab(tab) {
+    setActiveTab(tab);
+    if (window.location.hash !== `#${tab}`) {
+      window.history.pushState(null, '', `${window.location.pathname}${window.location.search}#${tab}`);
+    }
+  }
+
   function updateVisited(key, checked) {
     const nextVisited = { ...visited, [key]: checked };
     setVisited(nextVisited);
@@ -356,44 +121,121 @@ export default function App() {
     }
   }
 
+  function updateKeyRow(index, field, value) {
+    const nextRows = keyRows.map((row, rowIndex) => (
+      rowIndex === index ? { ...row, [field]: value } : row
+    ));
+    setKeyRows(nextRows);
+    try {
+      localStorage.setItem(KEY_TRACKING_STORAGE_KEY, JSON.stringify(nextRows));
+      setStatus('Saved');
+    } catch (error) {
+      setStatus('Could not save key tracking in this browser.');
+      console.error('Could not save key tracking in this browser.', error);
+    }
+  }
+
+  function resetData() {
+    if (!window.confirm('Reset saved site visit marks and key tracking data?')) return;
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(KEY_TRACKING_STORAGE_KEY);
+      setVisited({});
+      setKeyRows(EMPTY_KEY_ROWS.map((row) => ({ ...row })));
+      setStatus('Data reset');
+    } catch (error) {
+      setStatus('Could not reset saved data in this browser.');
+      console.error('Could not reset saved data in this browser.', error);
+    }
+  }
+
   return (
     <main>
-      <header>
-        <h1>Site Schedule</h1>
-        <p>Track visited sites and check mining speeds. Visited selections are saved in this browser.</p>
+      <div className="top-actions">
+        <button
+          aria-current={activeTab === 'tracker' ? 'page' : undefined}
+          className={`tracker-action${activeTab === 'tracker' ? ' active' : ''}`}
+          onClick={() => navigateToTab('tracker')}
+          type="button"
+        >
+          Tracker
+        </button>
+        <button className="reset-button" onClick={resetData} type="button">Reset Data</button>
+      </div>
+      <nav aria-label="Main sections" className="top-nav">
+        <h1 className="nav-brand">WTTG 3 Guide</h1>
+        <div className="nav-tabs">
+          {[
+            ['sites', 'Site List'],
+            ['tiers', 'Tier List'],
+            ['keys', 'Key Tracking']
+          ].map(([tab, label]) => (
+            <button
+              aria-current={activeTab === tab ? 'page' : undefined}
+              className={`nav-button${activeTab === tab ? ' active' : ''}`}
+              key={tab}
+              onClick={() => navigateToTab(tab)}
+              type="button"
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </nav>
+      <header className="page-header">
+        <p>Your companion for exploring sites, checking mining tiers, and keeping your wiki keys organized.</p>
         <span aria-live="polite" className="status">{status}</span>
       </header>
-      <div className="section-label">Site schedule</div>
-      <div aria-label="Sort sites" className="schedule-controls" role="group">
-        <span className={`sort-option${sortAlphabetically ? '' : ' active'}`}>By Schedule</span>
-        <label className="sort-toggle">
-          <input
-            aria-label={sortAlphabetically ? 'Switch to schedule sort' : 'Switch to alphabetical sort'}
-            checked={sortAlphabetically}
-            onChange={toggleSort}
-            type="checkbox"
-          />
-          <span className="sort-slider" />
-        </label>
-        <span className={`sort-option${sortAlphabetically ? ' active' : ''}`}>Alphabetical</span>
-      </div>
-      <div className={`site-schedule${transitioning ? ' is-transitioning' : ''}`} id="site-schedule">
-        {loadError ? (
-          <p className="schedule-error">{loadError}</p>
-        ) : (
-          <>
-            {sortAlphabetically ? (
-              siteGroups.length > 0 && <SiteGroup group="Alphabetical" sites={alphabeticalSites} visited={visited} onVisitedChange={updateVisited} onOpenSite={setActiveSite} />
+      {activeTab === 'sites' && (
+        <section aria-label="Site list">
+          <div className="section-label">Site list</div>
+          <div aria-label="Sort sites" className="schedule-controls" role="group">
+            <span className={`sort-option${sortAlphabetically ? '' : ' active'}`}>By Schedule</span>
+            <label className="sort-toggle">
+              <input
+                aria-label={sortAlphabetically ? 'Switch to schedule sort' : 'Switch to alphabetical sort'}
+                checked={sortAlphabetically}
+                onChange={toggleSort}
+                type="checkbox"
+              />
+              <span className="sort-slider" />
+            </label>
+            <span className={`sort-option${sortAlphabetically ? ' active' : ''}`}>Alphabetical</span>
+          </div>
+          <div className={`site-schedule${transitioning ? ' is-transitioning' : ''}`} id="site-schedule">
+            {loadError ? (
+              <p className="schedule-error">{loadError}</p>
             ) : (
-              displayGroups.map((group) => (
-                <SiteGroup group={group.group} key={group.group} sites={group.sites} visited={visited} onVisitedChange={updateVisited} onOpenSite={setActiveSite} />
-              ))
+              <>
+                {sortAlphabetically ? (
+                  siteGroups.length > 0 && <SiteGroup group="Alphabetical" sites={alphabeticalSites} visited={visited} onVisitedChange={updateVisited} onOpenSite={setActiveSite} />
+                ) : (
+                  displayGroups.map((group) => (
+                    <SiteGroup group={group.group} key={group.group} sites={group.sites} visited={visited} onVisitedChange={updateVisited} onOpenSite={setActiveSite} />
+                  ))
+                )}
+              </>
             )}
-          </>
-        )}
-      </div>
-      <div className="section-label">Mining tiers</div>
-      {MINING_TIERS.map((tier) => <MiningTier key={tier.name} tier={tier} />)}
+          </div>
+        </section>
+      )}
+      {activeTab === 'tiers' && (
+        <section aria-label="Tier list">
+          <div className="section-label">Mining tiers</div>
+          <div className="tiers-grid">
+            {MINING_TIERS.map((tier) => <MiningTier key={tier.name} tier={tier} />)}
+          </div>
+        </section>
+      )}
+      {activeTab === 'keys' && (
+        <section aria-label="Key tracking">
+          <div className="section-label">Key tracking</div>
+          <KeyTracking rows={keyRows} onChange={updateKeyRow} />
+        </section>
+      )}
+      {activeTab === 'tracker' && (
+        <WttgTracker onOpenSite={setActiveSite} onVisitedChange={updateVisited} visited={visited} />
+      )}
       {activeSite && <SiteImageDialog key={activeSite} onClose={() => setActiveSite('')} siteName={activeSite} />}
     </main>
   );

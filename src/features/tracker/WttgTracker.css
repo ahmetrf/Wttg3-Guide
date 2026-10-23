@@ -79,6 +79,18 @@
 .wt-sec-h { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-bottom: 1px solid #ffffff10; padding-bottom: 10px; margin-bottom: 10px; }
 .wt-sec-h h2 { padding: 0; border: 0; font-size: 14px; font-weight: 700; letter-spacing: .01em; }
 .wt-aside { color: var(--wt-cyan); font-size: 11px; font-weight: 700; }
+.wt .key-tracking-compact { width: 100%; max-width: 100%; margin: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.wt .key-tracking-compact .key-tracking-table { width: 100%; table-layout: fixed; }
+.wt .key-tracking-compact .key-tracking-table th,
+.wt .key-tracking-compact .key-tracking-table td { padding: 5px 4px; font-size: 11px; }
+.wt .key-tracking-compact .key-tracking-table th:first-child,
+.wt .key-tracking-compact .key-tracking-table td:first-child { width: 28px; }
+.wt .key-tracking-compact .key-tracking-table td:nth-child(2) { width: auto; }
+.wt .key-tracking-compact .key-tracking-table td:nth-child(3),
+.wt .key-tracking-compact .key-tracking-table th:nth-child(3) { width: 96px; }
+.wt .key-tracking-compact .key-input { min-width: 0; padding: 5px 7px; border-radius: 6px; font-size: 11px; }
+.wt .key-tracking-compact .wiki-options { gap: 4px; }
+.wt .key-tracking-compact .wiki-option span { width: 26px; height: 26px; border-radius: 6px; font-size: 11px; }
 .wt-empty { color: var(--wt-muted); font-size: 13px; }
 .wt-rows li { display: grid; grid-template-columns: 1fr auto; gap: 3px 12px; padding: 9px 1px; border-bottom: 1px solid #ffffff0b; font-size: 13px; }
 .wt-rows li:last-child, .wt-facts > div:last-child, .wt-log li:last-child { border-bottom: 0; }

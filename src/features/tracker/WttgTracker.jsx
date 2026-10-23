@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import KeyTracking from "../key-tracking/KeyTracking.jsx";
 import { validateSiteData } from "../site-list/siteData.js";
 import MiningTier from "../tier-list/MiningTier.jsx";
 import { MINING_TIERS } from "../tier-list/tiers.js";
@@ -261,7 +262,7 @@ function OpenSites({ groups, minute, error, onOpenSite, onVisitedChange, visited
 
 /* ---------- sayfa ---------- */
 
-export default function WttgTracker({ onOpenSite, onVisitedChange, visited }) {
+export default function WttgTracker({ keyRows, onKeyChange, onOpenSite, onVisitedChange, visited }) {
   const [mode, setMode] = useState("live"); // live | demo
   const { state, link } = useWttgLive(mode === "live");
   const now = useNow();
@@ -406,6 +407,10 @@ export default function WttgTracker({ onOpenSite, onVisitedChange, visited }) {
 
               <Section title="Hareket sensörleri" aside={(data.motion_sensors ?? []).length}>
                 <Chips items={data.motion_sensors} empty="Yerleştirilmiş sensör yok." />
+              </Section>
+
+              <Section title="Key Tracking">
+                <KeyTracking compact onChange={onKeyChange} rows={keyRows} />
               </Section>
             </aside>
           </div>

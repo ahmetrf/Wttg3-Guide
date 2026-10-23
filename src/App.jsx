@@ -234,7 +234,13 @@ export default function App() {
         </section>
       )}
       {activeTab === 'tracker' && (
-        <WttgTracker onOpenSite={setActiveSite} onVisitedChange={updateVisited} visited={visited} />
+        <WttgTracker
+          keyRows={keyRows}
+          onKeyChange={updateKeyRow}
+          onOpenSite={setActiveSite}
+          onVisitedChange={updateVisited}
+          visited={visited}
+        />
       )}
       {activeSite && <SiteImageDialog key={activeSite} onClose={() => setActiveSite('')} siteName={activeSite} />}
     </main>

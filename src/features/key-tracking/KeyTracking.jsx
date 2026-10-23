@@ -1,6 +1,6 @@
-export default function KeyTracking({ rows, onChange }) {
+export default function KeyTracking({ rows, onChange, compact = false }) {
   return (
-    <section aria-label="Key tracking" className="key-tracking-section">
+    <section aria-label="Key tracking" className={`key-tracking-section${compact ? ' key-tracking-compact' : ''}`}>
       <div className="table-wrap">
         <table className="key-tracking-table">
           <thead>

@@ -150,25 +150,17 @@ export default function App() {
   }
 
   return (
-    <main>
-      <div className="top-actions">
-        <button
-          aria-current={activeTab === 'tracker' ? 'page' : undefined}
-          className={`tracker-action${activeTab === 'tracker' ? ' active' : ''}`}
-          onClick={() => navigateToTab('tracker')}
-          type="button"
-        >
-          Tracker
-        </button>
-        <button className="reset-button" onClick={resetData} type="button">Reset Data</button>
-      </div>
+    <main className={activeTab === 'tracker' ? 'tracker-page' : ''}>
       <nav aria-label="Main sections" className="top-nav">
-        <h1 className="nav-brand">WTTG 3 Guide</h1>
+        <h1 className="nav-brand">
+          <span aria-hidden="true" className="nav-mark">W3</span>
+          <span>WTTG 3 Guide</span>
+        </h1>
         <div className="nav-tabs">
           {[
             ['sites', 'Site List'],
             ['tiers', 'Tier List'],
-            ['keys', 'Key Tracking']
+            ['keys', 'Key Tracker']
           ].map(([tab, label]) => (
             <button
               aria-current={activeTab === tab ? 'page' : undefined}
@@ -180,6 +172,17 @@ export default function App() {
               {label}
             </button>
           ))}
+        </div>
+        <div className="top-actions">
+          <button
+            aria-current={activeTab === 'tracker' ? 'page' : undefined}
+            className={`tracker-action${activeTab === 'tracker' ? ' active' : ''}`}
+            onClick={() => navigateToTab('tracker')}
+            type="button"
+          >
+            Tracker
+          </button>
+          <button className="reset-button" onClick={resetData} type="button">Reset Data</button>
         </div>
       </nav>
       <header className="page-header">
@@ -243,6 +246,21 @@ export default function App() {
         />
       )}
       {activeSite && <SiteImageDialog key={activeSite} onClose={() => setActiveSite('')} siteName={activeSite} />}
+      <footer className="site-footer">
+        <span>İletişim</span>
+        <a href="https://discord.gg/Z63f4gxAuR" rel="noreferrer" target="_blank">
+          <svg aria-hidden="true" className="contact-icon discord-icon" viewBox="0 0 24 24">
+            <path d="M6.2 6.5c3.8-1.8 7.8-1.8 11.6 0l2.1 9.7c-1.7 1.3-3.4 2.1-5.2 2.5l-1.1-1.8c.7-.2 1.3-.5 1.9-.9-2.3 1.1-4.8 1.1-7.1 0 .6.4 1.2.7 1.9.9l-1.1 1.8c-1.8-.4-3.5-1.2-5.2-2.5l2.2-9.7Zm3.4 6.4c-.8 0-1.4.7-1.4 1.5s.6 1.5 1.4 1.5 1.4-.7 1.4-1.5-.6-1.5-1.4-1.5Zm4.8 0c-.8 0-1.4.7-1.4 1.5s.6 1.5 1.4 1.5 1.4-.7 1.4-1.5-.6-1.5-1.4-1.5Z" />
+          </svg>
+          Discord
+        </a>
+        <a href="https://github.com/ahmetrf" rel="noreferrer" target="_blank">
+          <svg aria-hidden="true" className="contact-icon github-icon" viewBox="0 0 24 24">
+            <path d="M12 .8a11.2 11.2 0 0 0-3.54 21.82c.56.1.76-.24.76-.54v-2.1c-3.1.67-3.76-1.32-3.76-1.32-.5-1.28-1.24-1.62-1.24-1.62-1.02-.7.08-.69.08-.69 1.13.08 1.73 1.16 1.73 1.16 1 .1.45 2.03 3.32 1.55.1-.73.4-1.22.72-1.5-2.48-.28-5.08-1.27-5.08-5.53 0-1.22.44-2.22 1.16-3-.12-.28-.5-1.42.11-2.96 0 0 .95-.3 3.08 1.15a10.7 10.7 0 0 1 5.6 0c2.13-1.45 3.08-1.15 3.08-1.15.61 1.54.23 2.68.11 2.96.72.78 1.16 1.78 1.16 3 0 4.27-2.6 5.25-5.09 5.52.4.35.76 1.03.76 2.08v3.09c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8Z" />
+          </svg>
+          GitHub
+        </a>
+      </footer>
     </main>
   );
 }

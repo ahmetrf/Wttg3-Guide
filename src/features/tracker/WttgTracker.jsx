@@ -302,120 +302,34 @@ export default function WttgTracker({ keyRows, onKeyChange, onOpenSite, onVisite
   const threatActive = Boolean(data?.threat?.active_event) || (data?.threat?.actors?.length ?? 0) > 0;
   const p = data?.player ?? {};
 
+  useEffect(() => {
+    const threatClass = "wttg-threat-active";
+    document.body.classList.toggle(threatClass, Boolean(showData && threatActive));
+    return () => document.body.classList.remove(threatClass);
+  }, [showData, threatActive]);
+
   return (
     <div className={`wt${showData && threatActive ? " is-threat-active" : ""}`}>
-      <header className="wt-top">
-        <div>
-          <p className="wt-eyebrow">NIGHT SHIFT <span>//</span> OPERASYON PANELİ</p>
-          <h1>WTTG3 Tracker</h1>
-          <p>Oyundaki durumun canlı kontrol merkezi</p>
-        </div>
-        <div className="wt-top-r">
-          <span className={`wt-status ${statusTone}`}>
-            <i aria-hidden="true" />
-            {statusText}
-          </span>
-          <button type="button" className="wt-btn" onClick={() => setMode(mode === "live" ? "demo" : "live")}>
-            {mode === "live" ? "Demo verisini göster" : "Canlı moda dön"}
-          </button>
-        </div>
-      </header>
-
-      {!showData && (
-        <div className="wt-setup">
-          <h2>{stale ? "Oyundan veri gelmiyor" : data && !data.in_game ? "Oyun ana menüde" : "Oyuna bağlanmak için"}</h2>
-          {stale || (data && !data.in_game) ? (
-            <p>Oyunu açıp bir kayda girdiğinde veriler otomatik görünür.</p>
-          ) : (
-            <ol>
-              <li>WTTG3'ü UE4SS ve WTTG3Helper modu ile aç.</li>
-              <li>Köprü programını (bridge) çalıştır.</li>
-              <li>Tarayıcı yerel ağ erişimi izni isterse izin ver.</li>
-            </ol>
-          )}
-        </div>
-      )}
-
-      {showData && (
-        <>
-          <section aria-label="Hızlı durum özeti" className="wt-overview">
-            <StatCard label="DOS COIN" value={num(p.dos_coin)} detail="Mevcut bakiye" tone="cyan" />
-            <StatCard label="YOLO YEN" value={num(p.yolo_yen)} detail="Mevcut bakiye" tone="violet" />
-            <StatCard label="İTİBAR" value={num(p.rep_level)} detail={`${num(p.rep_xp)} XP deneyimi`} tone="amber" />
-            <StatCard
-              label="DAYANIKLILIK"
-              value={typeof p.stamina === "number" ? `%${Math.round(p.stamina * 100)}` : "–"}
-              detail="Enerji seviyesi"
-              tone="green"
-            >
-              <Meter ratio={p.stamina} tone={p.stamina < 0.25 ? "low" : ""} />
-            </StatCard>
-          </section>
-
-          <div className="wt-hero">
-            <ThreatHero threat={data.threat} />
-            <GameClock time={data.time} />
+      <div className={`wt-layout${showData ? " has-game-data" : ""}`}>
+        <header className="wt-top">
+          <div>
+            <p className="wt-eyebrow">NIGHT SHIFT <span>//</span> OPERASYON PANELİ</p>
+            <h1>WTTG3 Tracker</h1>
+            <p>Oyundaki durumun canlı kontrol merkezi</p>
           </div>
-
-          <div className="wt-grid">
-            <div className="wt-main">
-              <Section
-                title="Bekleyen siparişler"
-                aside={(data.orders?.deliveries?.length ?? 0) + (data.orders?.darkdrop?.length ?? 0)}
-              >
-                <Rows
-                  items={[...(data.orders?.deliveries ?? []), ...(data.orders?.darkdrop ?? [])].map((o) => ({ ...o, value: "Yolda" }))}
-                  empty="Bekleyen sipariş yok."
-                />
-              </Section>
-
-              <Section title="Tehdit geçmişi" aside="Bu oturum">
-                {(data.threat?.history ?? []).length === 0 ? (
-                  <Empty>Henüz bir tehdit değişimi kaydedilmedi.</Empty>
-                ) : (
-                  <ul className="wt-log">
-                    {[...data.threat.history].reverse().map((h, i) => (
-                      <li key={`${h.at}-${i}`}>
-                        <time>{h.at ? clock(h.at) : "–"}</time>
-                        <span>
-                          {h.actors?.length
-                            ? h.actors.map(pretty).join(", ")
-                            : h.event_name
-                              ? pretty(h.event_name)
-                              : "Tehdit sona erdi"}
-                        </span>
-                        <em>{typeof h.hours_left === "number" ? `${h.hours_left} sa kaldı` : ""}</em>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </Section>
-            </div>
-
-            <aside className="wt-side">
-              <Section title="Durum">
-                <dl className="wt-facts">
-                  <div><dt>Güvenlik duvarı</dt><dd>{p.firewall_on ? `Açık, seviye ${p.firewall_tier ?? "–"}` : "Kapalı"}</dd></div>
-                  <div><dt>Sanal makine limiti</dt><dd>{num(p.max_vms)}</dd></div>
-                  {p.locked_out ? <div><dt>Koşma</dt><dd>Kilitli</dd></div> : null}
-                </dl>
-              </Section>
-
-              <Section title="Madenciler" aside={(data.crypto_miners ?? []).length}>
-                <Rows items={data.crypto_miners} empty="Çalışan madenci yok." />
-              </Section>
-
-              <Section title="Hareket sensörleri" aside={(data.motion_sensors ?? []).length}>
-                <Chips items={data.motion_sensors} empty="Yerleştirilmiş sensör yok." />
-              </Section>
-
-              <Section title="Key Tracking">
-                <KeyTracking compact onChange={onKeyChange} rows={keyRows} />
-              </Section>
-            </aside>
+          <div className="wt-top-r">
+            <span className={`wt-status ${statusTone}`}>
+              <i aria-hidden="true" />
+              {statusText}
+            </span>
+            <button type="button" className="wt-btn" onClick={() => setMode(mode === "live" ? "demo" : "live")}>
+              {mode === "live" ? "Demo verisini göster" : "Canlı moda dön"}
+            </button>
           </div>
+        </header>
 
-          <div className="wt-sites">
+        {showData && (
+          <aside className="wt-rail wt-sites">
             <OpenSites
               groups={siteGroups}
               minute={data.time?.minute_count}
@@ -424,16 +338,117 @@ export default function WttgTracker({ keyRows, onKeyChange, onOpenSite, onVisite
               onVisitedChange={onVisitedChange}
               visited={visited}
             />
-          </div>
+          </aside>
+        )}
 
-          <section aria-label="Tier list">
-            <div className="section-label">Mining tiers</div>
-            <div className="tiers-grid">
-              {MINING_TIERS.map((tier) => <MiningTier key={tier.name} tier={tier} />)}
+        <div className="wt-center">
+          {!showData && (
+            <div className="wt-setup">
+              <h2>{stale ? "Oyundan veri gelmiyor" : data && !data.in_game ? "Oyun ana menüde" : "Oyuna bağlanmak için"}</h2>
+              {stale || (data && !data.in_game) ? (
+                <p>Oyunu açıp bir kayda girdiğinde veriler otomatik görünür.</p>
+              ) : (
+                <ol>
+                  <li>Elinizde WTTG3-Tracker uygulaması yoksa Discord sunucumuza katılarak benimle iletişime geçebilirsiniz.</li>
+                  <li>WTTG3-Tracker uygulamasını çalıştırın.</li>
+                  <li>Tarayıcı yerel ağ erişimi izni isterse izin ver.</li>
+                </ol>
+              )}
             </div>
-          </section>
-        </>
-      )}
+          )}
+
+          {showData && (
+            <>
+              <section aria-label="Hızlı durum özeti" className="wt-overview">
+                <StatCard label="DOS COIN" value={num(p.dos_coin)} detail="Mevcut bakiye" tone="cyan" />
+                <StatCard label="YOLO YEN" value={num(p.yolo_yen)} detail="Mevcut bakiye" tone="violet" />
+                <StatCard label="İTİBAR" value={num(p.rep_level)} detail={`${num(p.rep_xp)} XP deneyimi`} tone="amber" />
+                <StatCard
+                  label="DAYANIKLILIK"
+                  value={typeof p.stamina === "number" ? `%${Math.round(p.stamina * 100)}` : "–"}
+                  detail="Enerji seviyesi"
+                  tone="green"
+                >
+                  <Meter ratio={p.stamina} tone={p.stamina < 0.25 ? "low" : ""} />
+                </StatCard>
+              </section>
+
+              <div className="wt-hero">
+                <ThreatHero threat={data.threat} />
+                <GameClock time={data.time} />
+              </div>
+
+              <div className="wt-grid">
+                <div className="wt-main">
+                  <Section
+                    title="Bekleyen siparişler"
+                    aside={(data.orders?.deliveries?.length ?? 0) + (data.orders?.darkdrop?.length ?? 0)}
+                  >
+                    <Rows
+                      items={[...(data.orders?.deliveries ?? []), ...(data.orders?.darkdrop ?? [])].map((o) => ({ ...o, value: "Yolda" }))}
+                      empty="Bekleyen sipariş yok."
+                    />
+                  </Section>
+
+                  <Section title="Tehdit geçmişi" aside="Bu oturum">
+                    {(data.threat?.history ?? []).length === 0 ? (
+                      <Empty>Henüz bir tehdit değişimi kaydedilmedi.</Empty>
+                    ) : (
+                      <ul className="wt-log">
+                        {[...data.threat.history].reverse().map((h, i) => (
+                          <li key={`${h.at}-${i}`}>
+                            <time>{h.at ? clock(h.at) : "–"}</time>
+                            <span>
+                              {h.actors?.length
+                                ? h.actors.map(pretty).join(", ")
+                                : h.event_name
+                                  ? pretty(h.event_name)
+                                  : "Tehdit sona erdi"}
+                            </span>
+                            <em>{typeof h.hours_left === "number" ? `${h.hours_left} sa kaldı` : ""}</em>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </Section>
+                </div>
+
+                <aside className="wt-side">
+                  <Section title="Durum">
+                    <dl className="wt-facts">
+                      <div><dt>Güvenlik duvarı</dt><dd>{p.firewall_on ? `Açık, seviye ${p.firewall_tier ?? "–"}` : "Kapalı"}</dd></div>
+                      <div><dt>Sanal makine limiti</dt><dd>{num(p.max_vms)}</dd></div>
+                      {p.locked_out ? <div><dt>Koşma</dt><dd>Kilitli</dd></div> : null}
+                    </dl>
+                  </Section>
+
+                  <Section title="Madenciler" aside={(data.crypto_miners ?? []).length}>
+                    <Rows items={data.crypto_miners} empty="Çalışan madenci yok." />
+                  </Section>
+
+                  <Section title="Hareket sensörleri" aside={(data.motion_sensors ?? []).length}>
+                    <Chips items={data.motion_sensors} empty="Yerleştirilmiş sensör yok." />
+                  </Section>
+                </aside>
+              </div>
+
+              <section aria-label="Tier list">
+                <div className="section-label">Mining tiers</div>
+                <div className="tiers-grid">
+                  {MINING_TIERS.map((tier) => <MiningTier key={tier.name} tier={tier} />)}
+                </div>
+              </section>
+            </>
+          )}
+        </div>
+        {showData && (
+          <aside className="wt-rail wt-key-tracker">
+            <Section title="Key Tracker">
+              <KeyTracking compact onChange={onKeyChange} rows={keyRows} />
+            </Section>
+          </aside>
+        )}
+      </div>
     </div>
   );
 }
